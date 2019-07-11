@@ -10,8 +10,8 @@ function [x,y]=simulateMVlinearinteraction(dimx,dimy,dimt,levelofnoise,levelofsp
 %                     Either levelofsparsity or levelofdeformation has to be set to [].
 % numberofsubjs:      number of subjects
 % OUTPUT
-% x:                  each cell represents the MV-patterns for the ROIX for a specific
-%                     subject and run
+% x:                  each cell represents the matrix with demeaned and standardized MV-pattern   
+%                     for the ROIX for a specific subject and run
 % y:                  each cell represtns the MV-patterns for the ROIY for a specific
 %                     subject and run
 % Alessio Basti 20/02/2019 (Basti et al. 2019)

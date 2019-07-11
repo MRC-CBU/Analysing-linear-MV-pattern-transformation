@@ -1,6 +1,6 @@
-function [Ttilde,optlambda,gof]=tikregmethod(x,y,lambdas); 
+function [Ttilde,optlambda,gof]=ridgeregmethod(x,y,lambdas); 
 % Computation of the estimated linear transformation T (i.e. such that y=Tx) 
-% via a cross-validated version of the Tikhonov regularization method.
+% via a cross-validated version of the ridge regression method.
 % 
 % INPUT
 % x:         patterns in the ROIX
@@ -18,12 +18,13 @@ for i=lambdas
    for j=1:size(x,2)
        A(j,j)=1/(1-H(j,j));
    end            
-   CrossValid(k)=(norm(A*((eye(size(x,2))-H)*y'),'fro'))^2/size(x,2);                    
+   CrossValid(k)=(norm(A*((eye(size(x,2))-H)*y'),'fro'))^2;                    
    k=k+1;
 end
 [B C]=min(CrossValid);
 optlambda=lambdas(C);
-gof=100*(1-B/size(y,1));
+gof=100*(1-B/(size(x,2)*size(y,1)));
 Ttilde=y*x'*pinv(x*x'+optlambda*eye(size(x,1)));
+
 
 return

@@ -1,7 +1,7 @@
 function [T]=simulmatrixspecificSV(dimx,dimy,deformation); 
 % Starting from a matrix whose entries are realizations of Gaussian random
 % variable, this function changes the singular values in order to allow them 
-% to have a specific rate od decay.
+% to have a specific rate of decay.
 % INPUT
 % dimx:          number of voxels in ROIX
 % dimy:          number of voxels in ROIY
@@ -9,8 +9,6 @@ function [T]=simulmatrixspecificSV(dimx,dimy,deformation);
 % OUTPUT
 % T:             simulated transformation with a specific decay of the singular values
 % Alessio Basti 20/02/2019 (Basti et al. 2019)
-
-%indexesr and indexesrc are useful for simulating sparsities
 
 T=randn(dimy,dimx);
 [U K V]=svd(T);

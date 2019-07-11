@@ -1,13 +1,15 @@
-function [resultsMCsparsity]=MCproceduresparsity(x,dimx,dimy,dimt,lambdas,sparsities,numberofrep);
+function [resultsMCsparsity]=MCproceduresparsity(x,dimx,dimy,dimt,reglambda,approach,sparsities,numberofrep);
 % Monte Carlo procedure for sparsity.
 % INPUT
-% x:                 fMRI MV-pattern of interest for the input region
+% x:                 MV-pattern matrix of interest for the input region
 % dimx:              number of voxels in the ROIX
 % dimt:              number of stimuli
-% lambdas:           set of possible regulariation parameter
+% reglambda:         regulariation parameters
+% approach:          1 means using the optimal lambda obtained on real
+%                    data, while 0 means using lambdas in the set given as input
 % sparsities:        percentages of sparsity to simulate
 % numberofrep:       number of simulations for each investigated level of
-%                   sparsity and noise
+%                    sparsity and noise
 % OUTPUT
 % resultsMCsparsity: structure with goodness-of-fit, density curve and its rate of decay
 % Alessio Basti 20/02/2019 (Basti et al. 2019)
@@ -22,7 +24,7 @@ for mruns=1:2
         for jrep=1:numberofrep
             for kgam=1:numel(gammas)
                 for ispar=1:numel(sparsities)
-                    clearvars -except x X gammas sparsities lambdas indexesr indexesc dimt dimx dimy numberofrep ispar kgam jrep mruns nsubj resultsMCsparsity count totalns
+                    clearvars -except x X gammas sparsities reglambda approach indexesr indexesc dimt dimx dimy numberofrep ispar kgam jrep mruns nsubj resultsMCsparsity count totalns
 
                     % simulate transformation and MV-patterns of the ROIY
                     T=simulsparsematrix(dimx,dimy,sparsities(ispar));         
@@ -32,10 +34,13 @@ for mruns=1:2
                         y(:,i)=(y(:,i)-mean(y(:,i)))/std(y(:,i));
                     end
 
-                    % computation of optimal parameter and of the estimated transformation
-                    [Ttilde,optlambda,gof]=tikregmethod(X,y,lambdas);
-
-                    % computation of goodness of fit, of the density curve and of its rate of
+                    % computation of the estimated transformation and GOF
+                    if(approach==1)
+                        [Ttilde,optlambda,gof]=ridgeregmethod(X,y,reglambda.optimal(nsubj,mruns));
+                    elseif(approach==0)
+                        [Ttilde,optlambda,gof]=ridgeregmethod(X,y,reglambda.set);
+                    end
+                    % computation of the density curve and of its rate of
                     % decay
                     [rdd,density]=sparsityfeatures(Ttilde,X,y);
 
